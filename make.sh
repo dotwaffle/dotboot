@@ -31,6 +31,7 @@ boot_name="dotboot network booting service"
 boot_url="http://boot.vpn"
 
 # Get the latest submodule versions specified by the git repo
+git submodule init
 git submodule update
 
 # Build syslinux
