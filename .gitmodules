@@ -1,0 +1,6 @@
+[submodule "ipxe"]
+	path = ipxe
+	url = git://git.ipxe.org/ipxe.git
+[submodule "syslinux"]
+	path = syslinux
+	url = git://git.kernel.org/pub/scm/boot/syslinux/syslinux.git
