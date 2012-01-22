@@ -1,0 +1,13 @@
+#!ipxe
+echo Welcome to BOOT_NAME
+echo We will be booting from BOOT_URL today
+echo Using first available network device ...
+ifopen net0
+echo If you don't want to use DHCP, hit ^C *NOW*
+sleep 4
+dhcp net0
+set 209:string pxelinux.cfg/default
+set 210:string BOOT_URL/
+echo DHCP lease obtained, booting BOOT_URL ...
+chain ${210:string}pxelinux.0
+echo Booting failed. Booting from local disk instead ...
