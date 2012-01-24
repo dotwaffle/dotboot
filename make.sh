@@ -39,10 +39,17 @@ cd syslinux
 make
 cd ..
 
-# ipxe needs isolinux.bin to build ipxe.iso
-cp syslinux/core/isolinux.bin ipxe/src/util/
 
 # Build ipxe
 cd ipxe/src
+cp ../../syslinux/core/isolinux.bin util/ # ipxe needs isolinux.bin to build ipxe.iso
 make EMBED=../../config/ipxe
 cd ../..
+
+# Get list of currently active Linux Distro releases
+ubuntu_names=( $( curl ftp://mirrors.kernel.org/ubuntu/dists/ | cut -b57- | grep -v "-" ) )
+fedora_names=( $( curl ftp://mirrors.kernel.org/fedora/releases/ | cut -b57- | grep -v "test" ) )
+echo ${ubuntu_names[*]}
+echo ${fedora_names[*]}
+
+
