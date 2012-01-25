@@ -49,7 +49,27 @@ cd ../..
 # Get list of currently active Linux Distro releases
 ubuntu_names=( $( curl ftp://mirrors.kernel.org/ubuntu/dists/ | cut -b57- | grep -v "-" ) )
 fedora_names=( $( curl ftp://mirrors.kernel.org/fedora/releases/ | cut -b57- | grep -v "test" ) )
+
+echo Detected Ubuntu Releases
 echo ${ubuntu_names[*]}
+echo
+echo Deteched Fedora Releases
 echo ${fedora_names[*]}
+
+for i in ${ubuntu_names[*]}
+do
+	curl --head ftp://mirrors.kernel.org/ubuntu/dists/$i/main/installer-i386/current/images/netboot/mini.iso \
+		&& i386=1
+	curl --head ftp://mirrors.kernel.org/ubuntu/dists/precise/main/installer-amd64/current/images/netboot/mini.iso \
+		&& amd64=1
+done
+
+for i in ${fedora_names[*]}
+do
+	curl --head ftp://mirrors.kernel.org/fedora/releases/$i/Fedora/i386/iso/Fedora-$i-i386-netinst.iso \
+		&& i386=1
+	curl --head ftp://mirrors.kernel.org/fedora/releases/$i/Fedora/x86_64/iso/Fedora-$i-x86_64-netinst.iso \
+		&& x86_64=1
+done
 
 
