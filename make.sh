@@ -53,7 +53,7 @@ fedora_names=( $( curl ftp://mirrors.kernel.org/fedora/releases/ | cut -b57- | g
 echo Detected Ubuntu Releases
 echo ${ubuntu_names[*]}
 echo
-echo Deteched Fedora Releases
+echo Detected Fedora Releases
 echo ${fedora_names[*]}
 
 for i in ${ubuntu_names[*]}
