@@ -47,6 +47,7 @@ make EMBED=../../config/ipxe
 cd ../..
 
 # Get list of currently active Linux Distro releases on mirrors
+debian_names=( stable testing unstable experimental )
 ubuntu_names=( $( curl ftp://mirrors.kernel.org/ubuntu/dists/ | cut -b57- | grep -v "-" ) )
 fedora_names_dirty=( $( curl ftp://mirrors.kernel.org/fedora/releases/ | cut -b57- | grep -v "test" ) )
 
@@ -68,6 +69,9 @@ echo ${ubuntu_names[*]}
 echo
 echo Detected Fedora Releases
 echo ${fedora_names[*]}
+echo
+echo Assumed Debian Releases
+echo ${debian_names[*]}
 
 for i in ${ubuntu_names[*]}
 do
@@ -85,4 +89,10 @@ do
 		&& x86_64=1
 done
 
-
+for i in ${debian_names[*]}
+do
+	curl --head ftp://mirrors.kernel.org/debian/dists/$i/main/installer-i386/current/images/netboot/mini.iso \
+		&& i386=1
+	curl --head ftp://mirrors.kernel.org/debian/dists/$i/main/installer-amd64/current/images/netboot/mini.iso \
+		&& amd64=1
+done
