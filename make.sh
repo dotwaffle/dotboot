@@ -60,7 +60,7 @@ for i in ${ubuntu_names[*]}
 do
 	curl --head ftp://mirrors.kernel.org/ubuntu/dists/$i/main/installer-i386/current/images/netboot/mini.iso \
 		&& i386=1
-	curl --head ftp://mirrors.kernel.org/ubuntu/dists/precise/main/installer-amd64/current/images/netboot/mini.iso \
+	curl --head ftp://mirrors.kernel.org/ubuntu/dists/$i/main/installer-amd64/current/images/netboot/mini.iso \
 		&& amd64=1
 done
 
