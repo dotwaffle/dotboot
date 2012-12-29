@@ -46,9 +46,22 @@ cp ../../syslinux/core/isolinux.bin util/ # ipxe needs isolinux.bin to build ipx
 make EMBED=../../config/ipxe
 cd ../..
 
-# Get list of currently active Linux Distro releases
+# Get list of currently active Linux Distro releases on mirrors
 ubuntu_names=( $( curl ftp://mirrors.kernel.org/ubuntu/dists/ | cut -b57- | grep -v "-" ) )
-fedora_names=( $( curl ftp://mirrors.kernel.org/fedora/releases/ | cut -b57- | grep -v "test" ) )
+fedora_names_dirty=( $( curl ftp://mirrors.kernel.org/fedora/releases/ | cut -b57- | grep -v "test" ) )
+
+# Validate the fedora releases, as they keep directories a long time after they no longer exist
+for i in $fedora_names_dirty
+do
+	curl -sl ftp://mirrors.kernel.org/fedora/releases/$i/Fedora/i386/iso/Fedora-$i-i386-netinst.iso \
+		| grep Fedora-$i-i386-netinst.iso
+	result=$?
+	if [[ $result == 0 ]]
+	then
+		fedora_names+=( $i )
+	else
+	fi
+done
 
 echo Detected Ubuntu Releases
 echo ${ubuntu_names[*]}
