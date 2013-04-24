@@ -1,4 +1,23 @@
-# boot-url is set in bootstrap.ipxe
+#!ipxe
+
+set boot-url http://boot.on6.co.uk
+set bootstrap-url ${boot-url}/bootstrap
+set menu-url ${boot-url}/menu.ipxe
+
+# Boot <boot-url>/bootstrap/hostname-<hostname>.ipxe
+# if hostname DHCP variable is set and script is present
+isset ${hostname} && chain --replace --autofree ${bootstrap-url}/hostname-${hostname}.ipxe && exit ||
+
+# Boot <boot-url>/bootstrap/uuid-<UUID>.ipxe
+# if uuid SMBIOS variable is set and script is present
+isset ${uuid} && chain --replace --autofree ${bootstrap-url}/uuid-${uuid}.ipxe && exit ||
+
+# Boot <boot-url>/bootstrap/mac-01-02-03-04-05-06.ipxe if script is present
+chain --replace --autofree ${bootstrap-url}/mac-${mac:hexhyp}.ipxe && exit ||
+
+# Boot <boot-url>/bootstrap/bus-01-80-86-10-0e.ipxe if PCI Intel adapter
+# is present and script is present
+chain --replace --autofree ${bootstrap-url}/bus-${busid:hexhyp}.ipxe && exit ||
 
 set menu-timeout 5000
 set submenu-timeout ${menu-timeout}

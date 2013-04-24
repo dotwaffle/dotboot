@@ -26,7 +26,7 @@ usage()
 }
 
 # Initialise some variables, setting sane defaults
-output=./output
+output=./bootstrap.ipxe
 boot_name="dotboot network booting service"
 boot_url="http://boot.vpn"
 
