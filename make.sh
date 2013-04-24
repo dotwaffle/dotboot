@@ -47,7 +47,7 @@ cd ../..
 
 cat menu/header >$output
 
-for distro in $(ls distros)
+for distro in $(ls menu/distros)
 do
 	distros/$distro >$output
 done
