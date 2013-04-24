@@ -39,9 +39,19 @@ cd syslinux
 make
 cd ..
 
-# Build ipxe
+# Build ipxe (1)
 cd ipxe/src
 cp ../../syslinux/core/isolinux.bin util/ # ipxe needs isolinux.bin to build ipxe.iso
+
+# Temporary hatchet job until I can make a better solution
+grep 'ifneq ($(GITVERSION),)' Makefile.housekeeping >/dev/null 2>&1
+result=$?
+if [[ $result == 0 ]]
+then
+	sed -i -e '662,665d' Makefile.housekeeping
+fi
+
+# Build ipxe (2)
 make EMBED=../../config/ipxe
 cd ../..
 
