@@ -49,6 +49,6 @@ cat menu/header >$output
 
 for distro in $(ls menu/distros)
 do
-	menu/distros/$distro >$output
+	menu/distros/$distro >>$output
 done
 
