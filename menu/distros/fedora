@@ -1,0 +1,44 @@
+#!/bin/bash
+
+echo ":menu-fedora"
+
+dists_maybe=( $( curl -ss ftp://mirrors.kernel.org/fedora/releases/ | cut -b57- | grep -v "test" ) )
+dists=""
+
+# Validate the fedora releases, as they keep directories a long time after they no longer exist
+for dist in ${dists_maybe[*]}
+do
+	curl -sl ftp://mirrors.kernel.org/fedora/releases/$dist/Fedora/i386/iso/Fedora-$dist-i386-netinst.iso \
+		| grep Fedora-$dist-i386-netinst.iso >/dev/null 2>&1
+	result=$?
+	if [[ $result == 0 ]]
+	then
+		dists+=( $dist )
+	fi
+done
+
+for dist in ${dists[*]}
+do
+	# Generate the menu
+
+	for arch in i386 x86_64
+	do
+		echo "item fedora-$dist-$arch Install Fedora $dist $arch"
+	done
+done
+
+echo "item"
+echo "item --key x back <=== Back to main menu..."
+echo "choose selected && goto \${selected} || goto start"
+echo ""
+
+for dist in ${dists[*]}
+do
+	# Generate the startup items
+	for arch in i386 x86_64
+	do
+		echo ":fedora-$dist-$arch"
+		echo "sanboot --no-describe ftp://mirrors.kernel.org/debian/dists/$dist/main/installer-$arch/current/images/netboot/mini.iso || goto failed"
+		echo ""
+	done
+done

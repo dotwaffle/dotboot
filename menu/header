@@ -1,0 +1,54 @@
+# boot-url is set in bootstrap.ipxe
+
+set menu-timeout 5000
+set submenu-timeout ${menu-timeout}
+
+# Ensure we have menu-default set to something
+isset ${menu-default} || set menu-default exit
+
+# If we don't have a hostname, let's set one
+isset ${hostname} || set hostname machine
+
+:start
+menu iPXE boot menu for ${hostname} at ${boot-url}
+item --gap --             ------------------------- Operating systems ------------------------------
+item --key u menu-ubuntu  Install Ubuntu...
+item --gap --             ------------------------- Tools and utilities ----------------------------
+item --gap --             ------------------------- Advanced options -------------------------------
+item --key c config       Configure settings
+item shell                Drop to iPXE shell
+item reboot               Reboot computer
+item
+item --key x exit         Exit iPXE and continue BIOS boot
+choose --timeout ${menu-timeout} --default ${menu-default} selected || goto cancel
+set menu-timeout 0
+goto ${selected}
+
+:cancel
+echo You cancelled the menu, dropping you to a shell
+
+:shell
+echo Type exit to get the back to the menu
+shell
+set menu-timeout 0
+set submenu-timeout 0
+goto start
+
+:failed
+echo Booting failed, dropping to shell
+goto shell
+
+:reboot
+reboot
+
+:exit
+exit
+
+:config
+config
+goto start
+
+:back
+set submenu-timeout 0
+clear submenu-default
+goto start

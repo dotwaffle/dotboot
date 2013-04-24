@@ -39,60 +39,16 @@ cd syslinux
 make
 cd ..
 
-
 # Build ipxe
 cd ipxe/src
 cp ../../syslinux/core/isolinux.bin util/ # ipxe needs isolinux.bin to build ipxe.iso
 make EMBED=../../config/ipxe
 cd ../..
 
-# Get list of currently active Linux Distro releases on mirrors
-debian_names=( stable testing unstable experimental )
-ubuntu_names=( $( curl ftp://mirrors.kernel.org/ubuntu/dists/ | cut -b57- | grep -v "-" ) )
-fedora_names_dirty=( $( curl ftp://mirrors.kernel.org/fedora/releases/ | cut -b57- | grep -v "test" ) )
+cat menu/header >$output
 
-# Validate the fedora releases, as they keep directories a long time after they no longer exist
-for i in $fedora_names_dirty
+for distro in $(ls distros)
 do
-	curl -sl ftp://mirrors.kernel.org/fedora/releases/$i/Fedora/i386/iso/Fedora-$i-i386-netinst.iso \
-		| grep Fedora-$i-i386-netinst.iso
-	result=$?
-	if [[ $result == 0 ]]
-	then
-		fedora_names+=( $i )
-	else
-	fi
+	distros/$distro >$output
 done
 
-echo Detected Ubuntu Releases
-echo ${ubuntu_names[*]}
-echo
-echo Detected Fedora Releases
-echo ${fedora_names[*]}
-echo
-echo Assumed Debian Releases
-echo ${debian_names[*]}
-
-for i in ${ubuntu_names[*]}
-do
-	curl --head ftp://mirrors.kernel.org/ubuntu/dists/$i/main/installer-i386/current/images/netboot/mini.iso \
-		&& i386=1
-	curl --head ftp://mirrors.kernel.org/ubuntu/dists/$i/main/installer-amd64/current/images/netboot/mini.iso \
-		&& amd64=1
-done
-
-for i in ${fedora_names[*]}
-do
-	curl --head ftp://mirrors.kernel.org/fedora/releases/$i/Fedora/i386/iso/Fedora-$i-i386-netinst.iso \
-		&& i386=1
-	curl --head ftp://mirrors.kernel.org/fedora/releases/$i/Fedora/x86_64/iso/Fedora-$i-x86_64-netinst.iso \
-		&& x86_64=1
-done
-
-for i in ${debian_names[*]}
-do
-	curl --head ftp://mirrors.kernel.org/debian/dists/$i/main/installer-i386/current/images/netboot/mini.iso \
-		&& i386=1
-	curl --head ftp://mirrors.kernel.org/debian/dists/$i/main/installer-amd64/current/images/netboot/mini.iso \
-		&& amd64=1
-done

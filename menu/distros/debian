@@ -1,0 +1,31 @@
+#!/bin/bash
+
+echo ":menu-debian"
+
+dists="stable testing unstable experimental"
+
+for dist in $dists
+do
+	# Generate the menu
+
+	for arch in i386 amd64
+	do
+		echo "item debian-$dist-$arch Install Debian $dist $arch"
+	done
+done
+
+echo "item"
+echo "item --key x back <=== Back to main menu..."
+echo "choose selected && goto \${selected} || goto start"
+echo ""
+
+for dist in $dists
+do
+	# Generate the startup items
+	for arch in i386 amd64
+	do
+		echo ":debian-$dist-$arch"
+		echo "sanboot --no-describe ftp://mirrors.kernel.org/debian/dists/$dist/main/installer-$arch/current/images/netboot/mini.iso || goto failed"
+		echo ""
+	done
+done
