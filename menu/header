@@ -31,7 +31,9 @@ isset ${hostname} || set hostname machine
 :start
 menu iPXE boot menu for ${hostname} at ${boot-url}
 item --gap --             ------------------------- Operating systems ------------------------------
+item --key d menu-debian  Install Debian...
 item --key u menu-ubuntu  Install Ubuntu...
+item --key f menu-fedora  Install Fedora...
 item --gap --             ------------------------- Tools and utilities ----------------------------
 item --gap --             ------------------------- Advanced options -------------------------------
 item --key c config       Configure settings
