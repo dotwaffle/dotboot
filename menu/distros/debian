@@ -25,7 +25,7 @@ do
 	for arch in i386 amd64
 	do
 		echo ":debian-$dist-$arch"
-		echo "sanboot --no-describe ftp://mirrors.kernel.org/debian/dists/$dist/main/installer-$arch/current/images/netboot/mini.iso || goto failed"
+		echo "sanboot --no-describe http://mirrors.kernel.org/debian/dists/$dist/main/installer-$arch/current/images/netboot/mini.iso || goto failed"
 		echo ""
 	done
 done

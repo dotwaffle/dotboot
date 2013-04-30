@@ -30,7 +30,7 @@ do
 	for arch in i386 amd64
 	do
 		echo ":ubuntu-$dist-$arch"
-		echo "sanboot --no-describe ftp://mirrors.kernel.org/ubuntu/dists/$dist/main/installer-$arch/current/images/netboot/mini.iso || goto failed"
+		echo "sanboot --no-describe http://mirrors.kernel.org/ubuntu/dists/$dist/main/installer-$arch/current/images/netboot/mini.iso || goto failed"
 		echo ""
 	done
 done
