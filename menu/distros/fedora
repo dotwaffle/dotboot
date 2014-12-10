@@ -3,21 +3,44 @@
 echo ":menu-fedora"
 
 dists_maybe=( $( curl -ss ftp://mirrors.kernel.org/fedora/releases/ | cut -b57- | grep -v "test" ) )
-dists=""
+dists_pre21=""
+dists_post21=""
+
+for dist in ${dists_maybe[*]}
+do
+	if [[ $dist < 21 ]]
+	then
+		dists_maybe_pre21+=( $dist )
+	else
+		dists_maybe_post21+=( $dist )
+	fi
+done
 
 # Validate the fedora releases, as they keep directories a long time after they no longer exist
-for dist in ${dists_maybe[*]}
+for dist in ${dists_maybe_pre21[*]}
 do
 	curl -sl ftp://mirrors.kernel.org/fedora/releases/$dist/Fedora/i386/iso/Fedora-$dist-i386-netinst.iso \
 		| grep Fedora-$dist-i386-netinst.iso >/dev/null 2>&1
 	result=$?
 	if [[ $result == 0 ]]
 	then
-		dists+=( $dist )
+		dists_pre21+=( $dist )
 	fi
 done
 
-for dist in ${dists[*]}
+# Fedora 21 uses a different naming scheme. Sigh.
+for dist in ${dists_maybe_post21[*]}
+do
+	curl -sl ftp://mirrors.kernel.org/fedora/releases/$dist/Server/i386/iso/Fedora-Server-netinst-i386-${dist}.iso \
+		| grep Fedora-Server-netinst-i386-${dist}.iso >/dev/null 2>&1
+	result=$?
+	if [[ $result == 0 ]]
+	then
+		dists_post21+=( $dist )
+	fi
+done
+
+for dist in ${dists_pre21[*]} ${dists_post21[*]}
 do
 	# Generate the menu
 
@@ -32,13 +55,24 @@ echo "item --key x back <=== Back to main menu..."
 echo "choose selected && goto \${selected} || goto start"
 echo ""
 
-for dist in ${dists[*]}
+for dist in ${dists_pre21[*]}
 do
 	# Generate the startup items
 	for arch in i386 x86_64
 	do
 		echo ":fedora-$dist-$arch"
-		echo "sanboot --no-describe http://mirrors.kernel.org/debian/dists/$dist/main/installer-$arch/current/images/netboot/mini.iso || goto failed"
+		echo "sanboot --no-describe http://mirrors.kernel.org/fedora/releases/$dist/Fedora/$arch/iso/Fedora-$dist-$arch-netinst.iso || goto failed"
+		echo ""
+	done
+done
+
+for dist in ${dists_post21[*]}
+do
+	# Generate the startup items
+	for arch in i386 x86_64
+	do
+		echo ":fedora-$dist-$arch"
+		echo "sanboot --no-describe ftp://mirrors.kernel.org/fedora/releases/$dist/Server/${arch}/iso/Fedora-Server-netinst-${arch}-${dist}.iso || goto failed"
 		echo ""
 	done
 done
